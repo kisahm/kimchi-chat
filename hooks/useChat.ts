@@ -8,7 +8,7 @@ function generateId(): string {
 }
 
 export function useChat() {
-  const { settings, addMessage, updateMessage, createConversation, activeConversationId, getActiveConversation } = useStore();
+  const { settings, addMessage, updateMessage, updateMessageModel, createConversation, activeConversationId, getActiveConversation } = useStore();
   const abortRef = useRef<AbortController | null>(null);
 
   const sendMessage = useCallback(
@@ -90,6 +90,9 @@ export function useChat() {
               if (parsed.error) {
                 updateMessage(convId!, assistantMsgId, `Error: ${parsed.error}`, false);
                 return;
+              }
+              if (parsed.model) {
+                updateMessageModel(convId!, assistantMsgId, parsed.model);
               }
               if (parsed.delta) {
                 accumulated += parsed.delta;

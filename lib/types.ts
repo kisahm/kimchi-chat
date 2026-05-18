@@ -6,6 +6,7 @@ export interface Message {
   content: string;
   createdAt: number;
   isStreaming?: boolean;
+  model?: string;
 }
 
 export interface Conversation {

@@ -1,8 +1,22 @@
 import { NextRequest } from 'next/server';
 import OpenAI from 'openai';
 
-
 export const runtime = 'nodejs';
+
+async function resolveModel(client: OpenAI, requestedModel: string | undefined): Promise<string> {
+  // If a specific model was chosen, use it
+  if (requestedModel && requestedModel !== 'auto') return requestedModel;
+
+  // Auto: pick the first available model from the API
+  try {
+    const models = await client.models.list();
+    const first = models.data[0]?.id;
+    if (first) return first;
+  } catch {
+    // fall through to hardcoded default
+  }
+  return 'kimi-k2.6';
+}
 
 export async function POST(req: NextRequest) {
   const { messages, model, apiKey, baseUrl } = await req.json();
@@ -21,13 +35,16 @@ export async function POST(req: NextRequest) {
   const readable = new ReadableStream({
     async start(controller) {
       try {
-        const params: Parameters<typeof client.chat.completions.create>[0] = {
+        const resolvedModel = await resolveModel(client, model);
+
+        const stream = await client.chat.completions.create({
+          model: resolvedModel,
           messages,
           stream: true,
-          // only include model if explicitly chosen (not "auto")
-          ...(model ? { model } : {}),
-        };
-        const stream = await client.chat.completions.create(params as OpenAI.Chat.ChatCompletionCreateParamsStreaming);
+        });
+
+        // Send the resolved model name as the first event so the UI can display it
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ model: resolvedModel })}\n\n`));
 
         for await (const chunk of stream) {
           const delta = chunk.choices[0]?.delta?.content ?? '';

@@ -179,6 +179,11 @@ export default function MessageItem({ message }: Props) {
             {!message.isStreaming && (
               <div className="flex items-center gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
                 <CopyButton text={response} />
+                {message.model && (
+                  <span className="text-xs px-2 py-0.5 rounded-md font-mono" style={{ background: 'rgba(232,68,26,0.08)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>
+                    {message.model}
+                  </span>
+                )}
               </div>
             )}
           </>

@@ -19,6 +19,7 @@ interface Store {
   renameConversation: (id: string, title: string) => void;
   addMessage: (conversationId: string, message: Message) => void;
   updateMessage: (conversationId: string, messageId: string, content: string, isStreaming?: boolean) => void;
+  updateMessageModel: (conversationId: string, messageId: string, model: string) => void;
   getActiveConversation: () => Conversation | null;
 }
 
@@ -101,6 +102,15 @@ export const useStore = create<Store>()(
                   ),
                   updatedAt: Date.now(),
                 }
+              : c
+          ),
+        })),
+
+      updateMessageModel: (conversationId, messageId, model) =>
+        set((state) => ({
+          conversations: state.conversations.map((c) =>
+            c.id === conversationId
+              ? { ...c, messages: c.messages.map((m) => m.id === messageId ? { ...m, model } : m) }
               : c
           ),
         })),
