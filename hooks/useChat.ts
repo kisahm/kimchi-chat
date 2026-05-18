@@ -42,7 +42,7 @@ export function useChat() {
       const conv = getActiveConversation();
       const history = conv
         ? conv.messages
-            .filter((m) => !m.isStreaming && m.id !== assistantMsgId)
+            .filter((m) => !m.isStreaming && m.id !== assistantMsgId && m.id !== userMsg.id)
             .map((m) => ({ role: m.role, content: m.content }))
         : [];
       history.push({ role: 'user', content });
@@ -54,12 +54,13 @@ export function useChat() {
 
       try {
         const client = getKimchiClient(settings.apiKey, settings.baseUrl);
+        const requestParams: OpenAI.Chat.ChatCompletionCreateParamsStreaming = {
+          model: model ?? 'auto',
+          messages: history as OpenAI.ChatCompletionMessageParam[],
+          stream: true,
+        };
         const stream = await client.chat.completions.create(
-          {
-            model: model ?? 'gpt-4o',
-            messages: history as OpenAI.ChatCompletionMessageParam[],
-            stream: true,
-          },
+          requestParams,
           { signal: abortRef.current.signal }
         );
 
