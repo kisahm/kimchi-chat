@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import OpenAI from 'openai';
 
+
 export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
@@ -20,11 +21,13 @@ export async function POST(req: NextRequest) {
   const readable = new ReadableStream({
     async start(controller) {
       try {
-        const stream = await client.chat.completions.create({
-          model: model ?? 'auto',
+        const params: Parameters<typeof client.chat.completions.create>[0] = {
           messages,
           stream: true,
-        });
+          // only include model if explicitly chosen (not "auto")
+          ...(model ? { model } : {}),
+        };
+        const stream = await client.chat.completions.create(params as OpenAI.Chat.ChatCompletionCreateParamsStreaming);
 
         for await (const chunk of stream) {
           const delta = chunk.choices[0]?.delta?.content ?? '';

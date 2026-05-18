@@ -39,7 +39,7 @@ export default function MessageInput({ onSend, onStop, isStreaming, disabled }: 
 
   return (
     <div
-      className="input-wrap relative rounded-2xl transition-all"
+      className="glow-input relative rounded-2xl transition-all"
       style={{
         background: 'var(--bg-input)',
         border: '1px solid var(--border)',

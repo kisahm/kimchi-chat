@@ -139,7 +139,7 @@ export default function MessageItem({ message }: Props) {
 
   if (isUser) {
     return (
-      <div className="msg-enter flex justify-end">
+      <div className="anim-msg flex justify-end">
         <div
           className="max-w-[72%] rounded-2xl rounded-br-md px-4 py-3 text-sm leading-7 whitespace-pre-wrap"
           style={{
@@ -157,19 +157,19 @@ export default function MessageItem({ message }: Props) {
   // Loading dots
   if (!message.content && message.isStreaming) {
     return (
-      <div className="msg-enter flex gap-4 items-start">
+      <div className="anim-msg flex gap-4 items-start">
         <KimchiAvatar />
         <div className="flex items-center gap-1.5 py-3">
-          <span className="dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
-          <span className="dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
-          <span className="dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+          <span className="anim-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+          <span className="anim-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+          <span className="anim-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="msg-enter flex gap-4 items-start group">
+    <div className="anim-msg flex gap-4 items-start group">
       <KimchiAvatar />
       <div className="flex-1 min-w-0 pt-0.5">
         {thinking && <ThinkingBlock content={thinking} />}
@@ -184,13 +184,13 @@ export default function MessageItem({ message }: Props) {
           </>
         ) : thinking && message.isStreaming ? (
           <div className="flex items-center gap-1.5 py-1">
-            <span className="dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
-            <span className="dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
-            <span className="dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+            <span className="anim-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+            <span className="anim-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+            <span className="anim-dot w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
           </div>
         ) : null}
         {message.isStreaming && response && (
-          <span className="cursor-blink inline-block w-[2px] h-[1em] ml-0.5 translate-y-[2px] rounded-sm" style={{ background: 'var(--accent)' }} />
+          <span className="anim-blink inline-block w-[2px] h-[1em] ml-0.5 translate-y-[2px] rounded-sm" style={{ background: 'var(--accent)' }} />
         )}
       </div>
     </div>

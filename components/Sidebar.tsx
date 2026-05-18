@@ -128,10 +128,9 @@ export default function Sidebar({ onOpenSettings }: Props) {
               {convs.map((conv) => (
                 <div
                   key={conv.id}
-                  className="group relative flex items-center rounded-xl px-2.5 py-2 cursor-pointer transition-all mb-0.5"
+                  className={`sidebar-item group relative flex items-center rounded-xl px-2.5 py-2 cursor-pointer transition-all mb-0.5 ${conv.id === activeConversationId ? 'sidebar-item-active' : ''}`}
                   style={{
-                    background: conv.id === activeConversationId ? 'var(--accent-subtle)' : 'transparent',
-                    border: conv.id === activeConversationId ? '1px solid var(--accent-border)' : '1px solid transparent',
+                    border: '1px solid transparent',
                   }}
                   onClick={() => setActiveConversation(conv.id)}
                 >

@@ -62,7 +62,7 @@ export default function ChatWindow() {
               </div>
               <div className="text-center space-y-2">
                 <h1 className="text-3xl font-bold tracking-tight">
-                  <span className="gradient-text">kimchi</span>
+                  <span className="grad-text">kimchi</span>
                   <span style={{ color: 'var(--text-muted)' }}>.</span>
                   <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>chat</span>
                 </h1>
