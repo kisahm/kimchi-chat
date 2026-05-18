@@ -1,6 +1,6 @@
 'use client';
 import { useRef, useEffect, useState } from 'react';
-import { Send, Square, Paperclip } from 'lucide-react';
+import { ArrowUp, Square } from 'lucide-react';
 
 interface Props {
   onSend: (content: string) => void;
@@ -17,7 +17,7 @@ export default function MessageInput({ onSend, onStop, isStreaming, disabled }: 
     const ta = textareaRef.current;
     if (!ta) return;
     ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 144) + 'px';
+    ta.style.height = Math.min(ta.scrollHeight, 200) + 'px';
   }, [value]);
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -32,52 +32,61 @@ export default function MessageInput({ onSend, onStop, isStreaming, disabled }: 
     if (!trimmed || isStreaming || disabled) return;
     onSend(trimmed);
     setValue('');
+    if (textareaRef.current) textareaRef.current.style.height = 'auto';
   }
+
+  const canSend = value.trim().length > 0 && !isStreaming && !disabled;
 
   return (
     <div
-      className="relative flex items-end gap-2 rounded-xl p-2"
+      className="relative rounded-2xl transition-all"
       style={{
         background: 'var(--bg-input)',
         border: '1px solid var(--border)',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
       }}
     >
-      <button
-        className="flex-shrink-0 p-2 rounded-lg transition-colors"
-        style={{ color: 'var(--text-muted)' }}
-        title="Attach file (coming soon)"
-        disabled
-      >
-        <Paperclip size={18} />
-      </button>
-
       <textarea
         ref={textareaRef}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Message Kimchi... (Shift+Enter for new line)"
+        placeholder={disabled ? 'Enter API key in Settings to start chatting…' : 'Message Kimchi…'}
         disabled={disabled}
         rows={1}
-        className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted"
+        className="w-full resize-none bg-transparent text-sm outline-none px-4 pt-3.5 pb-3 pr-14"
         style={{
           color: 'var(--text-primary)',
-          maxHeight: '144px',
-          lineHeight: '1.5',
+          maxHeight: '200px',
+          lineHeight: '1.6',
+          caretColor: 'var(--accent)',
         }}
       />
 
-      <button
-        onClick={isStreaming ? onStop : handleSend}
-        disabled={!isStreaming && (!value.trim() || disabled)}
-        className="flex-shrink-0 p-2 rounded-lg transition-colors disabled:opacity-40"
-        style={{
-          background: isStreaming ? 'var(--bg-hover)' : 'var(--accent)',
-          color: 'white',
-        }}
-      >
-        {isStreaming ? <Square size={18} /> : <Send size={18} />}
-      </button>
+      <div className="absolute right-2.5 bottom-2.5">
+        {isStreaming ? (
+          <button
+            onClick={onStop}
+            className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors"
+            style={{ background: 'var(--bg-hover)', border: '1px solid var(--border)' }}
+            title="Stop generating"
+          >
+            <Square size={14} style={{ color: 'var(--text-secondary)' }} />
+          </button>
+        ) : (
+          <button
+            onClick={handleSend}
+            disabled={!canSend}
+            className="w-8 h-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
+            style={{
+              background: canSend ? 'var(--accent)' : 'var(--bg-hover)',
+              border: canSend ? 'none' : '1px solid var(--border)',
+            }}
+          >
+            <ArrowUp size={16} color={canSend ? 'white' : 'var(--text-muted)'} strokeWidth={2.5} />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
