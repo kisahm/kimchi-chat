@@ -36,7 +36,7 @@ export default function ChatWindow() {
       {/* Top bar */}
       <div
         className="flex items-center justify-between px-5 py-3 flex-shrink-0"
-        style={{ borderBottom: '1px solid var(--border-subtle)' }}
+        style={{ borderBottom: '1px solid var(--border-subtle)', background: 'rgba(10,10,10,0.8)', backdropFilter: 'blur(12px)' }}
       >
         <span className="text-sm font-medium truncate max-w-sm" style={{ color: 'var(--text-secondary)' }}>
           {conv?.title && conv.title !== 'New Chat' ? conv.title : ''}
@@ -49,18 +49,24 @@ export default function ChatWindow() {
         {!conv || conv.messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-8 px-4">
             {/* Logo */}
-            <div className="flex flex-col items-center gap-3">
+            <div className="flex flex-col items-center gap-4">
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                style={{ background: 'var(--accent-subtle)', border: '1px solid var(--accent-border)' }}
+                className="relative w-16 h-16 rounded-2xl flex items-center justify-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(232,68,26,0.2) 0%, rgba(249,115,22,0.08) 100%)',
+                  border: '1px solid rgba(232,68,26,0.25)',
+                  boxShadow: '0 0 40px rgba(232,68,26,0.12), inset 0 1px 0 rgba(255,255,255,0.05)',
+                }}
               >
-                <Flame size={28} style={{ color: 'var(--accent)' }} />
+                <Flame size={30} style={{ color: 'var(--accent)' }} />
               </div>
-              <div className="text-center">
-                <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                  kimchi<span style={{ color: 'var(--accent)' }}>.</span>chat
+              <div className="text-center space-y-2">
+                <h1 className="text-3xl font-bold tracking-tight">
+                  <span className="gradient-text">kimchi</span>
+                  <span style={{ color: 'var(--text-muted)' }}>.</span>
+                  <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>chat</span>
                 </h1>
-                <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
                   {noApiKey ? 'Enter your API key in Settings to begin' : 'How can I help you today?'}
                 </p>
               </div>
@@ -73,8 +79,14 @@ export default function ChatWindow() {
                   <button
                     key={label}
                     onClick={() => sendMessage(prompt)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all hover:border-[var(--accent)]"
-                    style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
+                    style={{
+                      background: 'var(--bg-elevated)',
+                      border: '1px solid var(--border)',
+                      color: 'var(--text-secondary)',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(232,68,26,0.4)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
                   >
                     <Icon size={14} style={{ color: 'var(--accent)' }} />
                     {label}
@@ -94,7 +106,7 @@ export default function ChatWindow() {
       </div>
 
       {/* Input area */}
-      <div className="flex-shrink-0 px-4 pb-5 pt-3">
+      <div className="flex-shrink-0 px-4 pb-5 pt-2">
         <div className="max-w-3xl mx-auto">
           <MessageInput
             onSend={(content) => sendMessage(content, conv?.id)}
@@ -103,9 +115,7 @@ export default function ChatWindow() {
             disabled={noApiKey}
           />
           <p className="mt-2.5 text-center text-xs" style={{ color: 'var(--text-muted)' }}>
-            Powered by{' '}
-            <span style={{ color: 'var(--accent)', fontWeight: 500 }}>kimchi.dev</span>
-            {' '}· AI can make mistakes
+            Powered by <span style={{ color: 'var(--accent)' }}>kimchi.dev</span> · AI can make mistakes
           </p>
         </div>
       </div>

@@ -39,11 +39,11 @@ export default function MessageInput({ onSend, onStop, isStreaming, disabled }: 
 
   return (
     <div
-      className="relative rounded-2xl transition-all"
+      className="input-wrap relative rounded-2xl transition-all"
       style={{
         background: 'var(--bg-input)',
         border: '1px solid var(--border)',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
       }}
     >
       <textarea
