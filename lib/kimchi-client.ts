@@ -1,33 +1,15 @@
-import OpenAI from 'openai';
 import { KimchiModel } from './types';
 
-let clientCache: { client: OpenAI; apiKey: string; baseUrl: string } | null = null;
-
-export function getKimchiClient(apiKey: string, baseUrl: string): OpenAI {
-  if (
-    clientCache &&
-    clientCache.apiKey === apiKey &&
-    clientCache.baseUrl === baseUrl
-  ) {
-    return clientCache.client;
-  }
-  const client = new OpenAI({
-    apiKey,
-    baseURL: baseUrl,
-    dangerouslyAllowBrowser: true,
-  });
-  clientCache = { client, apiKey, baseUrl };
-  return client;
-}
-
-export async function fetchModels(
-  apiKey: string,
-  baseUrl: string
-): Promise<KimchiModel[]> {
-  const client = getKimchiClient(apiKey, baseUrl);
+export async function fetchModels(apiKey: string, baseUrl: string): Promise<KimchiModel[]> {
   try {
-    const response = await client.models.list();
-    return response.data as KimchiModel[];
+    const res = await fetch('/api/models', {
+      headers: {
+        'x-api-key': apiKey,
+        'x-base-url': baseUrl,
+      },
+    });
+    if (!res.ok) return [];
+    return await res.json();
   } catch {
     return [];
   }
