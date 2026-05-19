@@ -1,0 +1,3 @@
+# Placeholder for Tauri icons
+# Generate proper icons with: npm run tauri icon <path-to-source-image>
+# Source image should be 1240x1240 or larger PNG

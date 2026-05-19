@@ -11,7 +11,7 @@ interface Props {
 }
 
 function parseThinking(content: string): { thinking: string | null; response: string } {
-  const match = content.match(/^<think>([\s\S]*?)<\/think>([\s\S]*)$/s);
+  const match = content.match(/^<think>([\s\S]*?)<\/think>([\s\S]*)$/);
   if (match) return { thinking: match[1].trim(), response: match[2].trim() };
   if (content.startsWith('<think>') && !content.includes('</think>'))
     return { thinking: content.slice(7).trim(), response: '' };

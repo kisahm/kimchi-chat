@@ -3,6 +3,11 @@ import { useCallback, useRef } from 'react';
 import { useStore } from '@/lib/store';
 import { Message } from '@/lib/types';
 
+// Detect if running in Tauri environment
+function isTauri(): boolean {
+  return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+}
+
 function generateId(): string {
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
@@ -51,6 +56,22 @@ export function useChat() {
 
       abortRef.current = new AbortController();
 
+      // Use Tauri native API if available
+      if (isTauri()) {
+        await sendMessageTauri(
+          convId,
+          assistantMsgId,
+          history,
+          model,
+          settings.apiKey,
+          settings.baseUrl,
+          updateMessage,
+          updateMessageModel
+        );
+        return;
+      }
+
+      // Fall back to web API
       try {
         const res = await fetch('/api/chat', {
           method: 'POST',
@@ -132,4 +153,64 @@ export function useChat() {
   }, [getActiveConversation]);
 
   return { sendMessage, stopGeneration, isStreaming };
+}
+
+// Tauri native API implementation
+async function sendMessageTauri(
+  convId: string,
+  assistantMsgId: string,
+  history: { role: string; content: string }[],
+  model: string | undefined,
+  apiKey: string,
+  baseUrl: string,
+  updateMessage: (conversationId: string, messageId: string, content: string, isStreaming?: boolean) => void,
+  updateMessageModel: (conversationId: string, messageId: string, model: string) => void
+) {
+  let accumulated = '';
+  let receivedModel = false;
+
+  try {
+    // Dynamic import to avoid errors in web mode
+    const { invoke } = await import('@tauri-apps/api/core');
+    const { Channel } = await import('@tauri-apps/api/core');
+
+    const channel = new Channel<{
+      event: string;
+      data?: { model?: string; delta?: string; error?: string };
+    }>();
+
+    channel.onmessage = (event) => {
+      switch (event.event) {
+        case 'model':
+          if (event.data?.model && !receivedModel) {
+            receivedModel = true;
+            updateMessageModel(convId, assistantMsgId, event.data.model);
+          }
+          break;
+        case 'delta':
+          if (event.data?.delta) {
+            accumulated += event.data.delta;
+            updateMessage(convId, assistantMsgId, accumulated, true);
+          }
+          break;
+        case 'error':
+          updateMessage(convId, assistantMsgId, `Error: ${event.data?.error || 'Unknown error'}`, false);
+          break;
+      }
+    };
+
+    await invoke('chat', {
+      messages: history,
+      model: model || null,
+      apiKey,
+      baseUrl,
+      onEvent: channel,
+    });
+
+    // Mark streaming as complete
+    updateMessage(convId, assistantMsgId, accumulated, false);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Unknown error';
+    updateMessage(convId, assistantMsgId, `Error: ${msg}`, false);
+  }
 }

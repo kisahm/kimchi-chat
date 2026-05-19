@@ -20,19 +20,58 @@ A fast, modern chat interface for [kimchi.dev](https://kimchi.dev) — supportin
 
 ## Quickstart
 
-### Requirements
+### Option 1: Native macOS App (Recommended)
 
+Build and run as a native macOS application — no browser needed.
+
+#### Requirements
+- [Node.js](https://nodejs.org) v18 or higher
+- [Rust](https://rustup.rs) — for Tauri backend
+- A kimchi.dev API key — get one at [app.kimchi.dev/settings](https://app.kimchi.dev/settings)
+
+#### Build & Run
+
+```bash
+# One-time setup
+git clone https://github.com/kisahm/kimchi-chat
+cd kimchi-chat
+npm install
+
+# Development (hot-reload)
+npm run tauri:dev
+
+# Production build (creates Kimchi Chat.app)
+npm run tauri:build
+```
+
+The native app will be at `src-tauri/target/release/bundle/macos/Kimchi Chat.app`.
+
+A distributable **.dmg installer** is also created at:
+- `src-tauri/target/release/bundle/dmg/Kimchi Chat_*.dmg`
+
+For a persistent copy, the latest build is also kept in:
+- [`releases/Kimchi-Chat-0.1.0-aarch64.dmg`](./releases/Kimchi-Chat-0.1.0-aarch64.dmg)
+
+See [macOS Build Instructions](.kimchi/docs/macos-build-instructions.md) for code signing, icons, and distribution.
+
+---
+
+### Option 2: Web Browser
+
+Run in your browser via Next.js dev server.
+
+#### Requirements
 - [Node.js](https://nodejs.org) v18 or higher
 - A kimchi.dev API key — get one at [app.kimchi.dev/settings](https://app.kimchi.dev/settings)
 
-### 1. Clone the repo
+#### 1. Clone the repo
 
 ```bash
 git clone https://github.com/kisahm/kimchi-chat
 cd kimchi-chat
 ```
 
-### 2. Start the app
+#### 2. Start the app
 
 ```bash
 ./start.sh
@@ -114,6 +153,7 @@ If you have the [kimchi CLI](https://github.com/castai/kimchi) running locally (
 | [openai](https://github.com/openai/openai-node) | OpenAI-compatible API client (server-side) |
 | [react-markdown](https://github.com/remarkjs/react-markdown) | Markdown rendering |
 | [lucide-react](https://lucide.dev) | Icons |
+| [Tauri v2](https://tauri.app) | Native desktop app (Rust + WebView) |
 
 ---
 

@@ -4,6 +4,10 @@ node_modules/
 # Next.js build output
 .next/
 out/
+dist/
+
+# Tauri build output
+src-tauri/target/
 
 # env files (never commit secrets)
 .env

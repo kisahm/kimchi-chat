@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import OpenAI from 'openai';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 async function resolveModel(client: OpenAI, requestedModel: string | undefined): Promise<string> {
   // If a specific model was chosen, use it
