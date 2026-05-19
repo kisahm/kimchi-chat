@@ -122,4 +122,4 @@ The kimchi.dev API (`llm.cast.ai`) does not send CORS headers, so direct browser
 
 ## License
 
-MIT
+MIT — see [LICENSE](./LICENSE)
