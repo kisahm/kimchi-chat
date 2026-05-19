@@ -8,6 +8,10 @@ A fast, modern chat interface for [kimchi.dev](https://kimchi.dev) — supportin
 
 ---
 
+![kimchi.chat screenshot](docs/screenshot.png)
+
+---
+
 ## What is this?
 
 **kimchi.chat** is an open-source web app that lets you chat with AI models via the [kimchi.dev](https://kimchi.dev) API — similar to ChatGPT or Claude, but connected to Kimchi's multi-model infrastructure.
