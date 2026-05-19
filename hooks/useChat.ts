@@ -8,11 +8,13 @@ function generateId(): string {
 }
 
 export function useChat() {
-  const { settings, addMessage, updateMessage, updateMessageModel, createConversation, activeConversationId, getActiveConversation } = useStore();
+  const { addMessage, updateMessage, updateMessageModel, createConversation, activeConversationId, getActiveConversation } = useStore();
   const abortRef = useRef<AbortController | null>(null);
 
   const sendMessage = useCallback(
     async (content: string, conversationId?: string) => {
+      // Read settings at call time to always get the current model — avoids stale closure
+      const { settings } = useStore.getState();
       let convId = conversationId ?? activeConversationId;
       if (!convId) {
         const conv = createConversation();
@@ -116,7 +118,8 @@ export function useChat() {
         }
       }
     },
-    [settings, addMessage, updateMessage, createConversation, activeConversationId, getActiveConversation]
+    // settings excluded — read from store.getState() at call time to avoid stale model value
+    [addMessage, updateMessage, updateMessageModel, createConversation, activeConversationId, getActiveConversation]
   );
 
   const stopGeneration = useCallback(() => {
